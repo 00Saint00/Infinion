@@ -104,7 +104,7 @@ const CampaignInfo = () => {
         </div>
         <div className="text-start mt-3">
           <div className="w-[100%]">
-            <p> Want to receive daily digest about the campaign?</p>
+            <p> Kindly select the time you want tio receive daily digest</p>
             <select
               className="border-1 px-[10px] pt-[10px] pb-[10px] w-full"
               value={campaign.dailyDigest}

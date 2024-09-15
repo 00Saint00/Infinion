@@ -8,7 +8,11 @@ const EditCampaign = () => {
   const [editCampaign, setEditCampaign] = useState({
     id: id,
     campaignName: "",
+    campaignDescription: "description",
+    digestCampaign: false,
     startDate: "",
+    endDate: "",
+    linkedKeywords: [],
   });
 
   useEffect(() => {
@@ -20,20 +24,40 @@ const EditCampaign = () => {
       });
   }, [id]);
 
+  // const handleChange = (event) => {
+  //   setEditCampaign({
+  //     ...editCampaign,
+  //     [event.target.name]: event.target.value,
+  //   });
+  // };
+
   const handleChange = (event) => {
-    setEditCampaign({
-      ...editCampaign,
-      [event.target.name]: event.target.value,
-    });
+    if (event.target.name === "digestCampaign") {
+      setEditCampaign((prevEditCampaign) => ({
+        ...prevEditCampaign,
+        digestCampaign: !prevEditCampaign.digestCampaign,
+      }));
+    } else {
+      setEditCampaign({
+        ...editCampaign,
+        [event.target.name]: event.target.value,
+      });
+    }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    // Wrap the editCampaign object inside campaignDTO
+    const payload = {
+      campaignDTO: editCampaign,
+    };
+
     fetch(
       `https://infinion-test-int-test.azurewebsites.net/api/campaign/${id}`,
       {
         method: "PUT",
-        body: JSON.stringify(editCampaign),
+        body: JSON.stringify(payload),
         headers: {
           "Content-Type": "application/json",
         },
@@ -50,6 +74,13 @@ const EditCampaign = () => {
   return (
     <div className="pt-[30px] px-[85px]">
       {/* ... */}
+
+      <div className="py-[16px] flex justify-between">
+        <h2 className="text-[#247B7B] font-bold text-[20px] m-0 ">
+          Campaign Information
+        </h2>
+      </div>
+
       <form onSubmit={handleSubmit}>
         <div className="text-start">
           <p>Campaign Name</p>
@@ -96,24 +127,29 @@ const EditCampaign = () => {
               onChange={(e) =>
                 setEditCampaign({
                   ...editCampaign,
-                  linkedKeywords: e.target.value.split("\n"),
+                  linkedKeywords: e.target.value
+                    .split("\n")
+                    .filter((keyword) => keyword !== ""),
                 })
               }
+              name="linkedKeywords"
             ></textarea>
           </div>
         </div>
 
         <div className="text-start mt-4">
           <div className="w-[100%]">
-            <p> Want to receive daily digest about the campaign?</p>
-            <select
-              name="receiveDailyDigest"
-              value={editCampaign.dailyDigest}
-              className="border-1 px-[10px] pt-[10px] pb-[10px] w-full"
+            <p>Want to receive daily digest about the campaign?</p>
+            <button
+              onClick={() => {
+                setEditCampaign((prevEditCampaign) => ({
+                  ...prevEditCampaign,
+                  digestCampaign: !prevEditCampaign.digestCampaign,
+                }));
+              }}
             >
-              <option value="Yes">Yes</option>
-              <option value="No">No</option>
-            </select>
+              {editCampaign.digestCampaign ? "Yes" : "No"}
+            </button>
           </div>
         </div>
 

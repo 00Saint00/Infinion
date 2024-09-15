@@ -39,3 +39,61 @@
     <CompactTable columns={COLUMNS} data={data} theme={theme} />
   )}
 </div>;
+
+
+
+//pagination
+
+<div style={{ display: "flex", justifyContent: "space-between" }}>
+<span>
+  Page:{" "}
+  {pagination.state.getPages(data.nodes).map((_, index) => {
+    if (
+      index === pagination.state.page ||
+      index === pagination.state.page + 1 ||
+      index === pagination.state.page + 2
+    ) {
+      return (
+        <button
+          key={index}
+          type="button"
+          style={{
+            fontWeight:
+              pagination.state.page === index ? "bold" : "normal",
+          }}
+          onClick={() => pagination.fns.onSetPage(index)}
+        >
+          {index + 1}
+        </button>
+      );
+    } else if (
+      index === 0 ||
+      index === pagination.state.getTotalPages(data.nodes) - 1
+    ) {
+      return (
+        <button
+          key={index}
+          type="button"
+          onClick={() => pagination.fns.onSetPage(index)}
+        >
+          {index + 1}
+        </button>
+      );
+    } else if (
+      index === pagination.state.page - 1 &&
+      pagination.state.page > 2
+    ) {
+      return <span key={index}>...</span>;
+    } else if (
+      index === pagination.state.page + 3 &&
+      pagination.state.page <
+        pagination.state.getTotalPages(data.nodes) - 2
+    ) {
+      return <span key={index}>...</span>;
+    }
+    return null;
+  })}
+</span>
+
+<span>showing result 10 of {data.nodes.length} results</span>
+</div>  
