@@ -8,11 +8,12 @@ const EditCampaign = () => {
   const [editCampaign, setEditCampaign] = useState({
     id: id,
     campaignName: "",
-    campaignDescription: "description",
-    digestCampaign: false,
+    campaignDescription: "",
+    digestCampaign: "No",
     startDate: "",
     endDate: "",
     linkedKeywords: [],
+    dailyDigest: "Daily",
   });
 
   useEffect(() => {
@@ -24,34 +25,34 @@ const EditCampaign = () => {
       });
   }, [id]);
 
-  // const handleChange = (event) => {
-  //   setEditCampaign({
-  //     ...editCampaign,
-  //     [event.target.name]: event.target.value,
-  //   });
-  // };
-
   const handleChange = (event) => {
-    if (event.target.name === "digestCampaign") {
-      setEditCampaign((prevEditCampaign) => ({
-        ...prevEditCampaign,
-        digestCampaign: !prevEditCampaign.digestCampaign,
-      }));
-    } else {
-      setEditCampaign({
-        ...editCampaign,
-        [event.target.name]: event.target.value,
-      });
-    }
+    const { name, value } = event.target;
+
+    setEditCampaign((prevEditCampaign) => ({
+      ...prevEditCampaign,
+      [name]: value,
+    }));
+  };
+
+  const handleBack = () => {
+    navigate("/campaign");
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Wrap the editCampaign object inside campaignDTO
     const payload = {
-      campaignDTO: editCampaign,
+      id: id,
+      campaignName: editCampaign.campaignName,
+      campaignDescription: editCampaign.campaignDescription,
+      digestCampaign: editCampaign.digestCampaign === "Yes",
+      startDate: editCampaign.startDate,
+      endDate: editCampaign.endDate,
+      linkedKeywords: editCampaign.linkedKeywords,
+      dailyDigest: editCampaign.dailyDigest,
     };
+
+    console.log("Payload being sent:", payload);
 
     fetch(
       `https://infinion-test-int-test.azurewebsites.net/api/campaign/${id}`,
@@ -63,20 +64,33 @@ const EditCampaign = () => {
         },
       }
     )
-      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(
+            `An error occurred... status: ${response.status}, body: ${response.statusText}`
+          );
+        }
+        return response.status;
+      })
       .then((data) => {
-        setEditCampaign(data);
-        console.log(data);
-        navigate("/"); // Redirect to homepage
-      });
+        if (data !== null) {
+          setEditCampaign({ ...editCampaign, ...data });
+          console.log("Response data:", data);
+        }
+        navigate("/");
+      })
+      .catch((error) => console.error("Submit error:", error));
   };
-
   return (
     <div className="pt-[30px] px-[85px]">
-      {/* ... */}
-
+      <>
+        <button className="flex gap-2 items-center" onClick={handleBack}>
+          <FaArrowLeft />
+          Back
+        </button>
+      </>
       <div className="py-[16px] flex justify-between">
-        <h2 className="text-[#247B7B] font-bold text-[20px] m-0 ">
+        <h2 className="text-[#247B7B] font-bold text-[20px] m-0">
           Campaign Information
         </h2>
       </div>
@@ -93,15 +107,28 @@ const EditCampaign = () => {
           />
         </div>
 
+        <div className="text-start">
+          <p>Campaign Description</p>
+          <input
+            type="text"
+            value={editCampaign.campaignDescription}
+            onChange={handleChange}
+            name="campaignDescription"
+            className="p-[10px] border-1 text-[#999999] rounded-[4px] w-full"
+          />
+        </div>
+
         <div className="flex gap-[40px] text-start justify-between py-[24px]">
           <div className="w-[100%]">
             <p>Start Date</p>
             <input
               type="date"
               name="startDate"
-              value={new Date(editCampaign.startDate).toLocaleDateString(
-                "en-CA"
-              )}
+              value={
+                editCampaign.startDate
+                  ? new Date(editCampaign.startDate).toISOString().split("T")[0]
+                  : ""
+              }
               onChange={handleChange}
               className="p-[10px] border-1 text-[#999999] rounded-[4px] w-full"
             />
@@ -111,7 +138,11 @@ const EditCampaign = () => {
             <input
               type="date"
               name="endDate"
-              value={new Date(editCampaign.endDate).toLocaleDateString("en-CA")}
+              value={
+                editCampaign.endDate
+                  ? new Date(editCampaign.endDate).toISOString().split("T")[0]
+                  : ""
+              }
               onChange={handleChange}
               className="p-[10px] border-1 text-[#999999] rounded-[4px] w-full"
             />
@@ -137,30 +168,31 @@ const EditCampaign = () => {
           </div>
         </div>
 
-        <div className="text-start mt-4">
+        <div className="text-start">
           <div className="w-[100%]">
             <p>Want to receive daily digest about the campaign?</p>
-            <button
-              onClick={() => {
-                setEditCampaign((prevEditCampaign) => ({
-                  ...prevEditCampaign,
-                  digestCampaign: !prevEditCampaign.digestCampaign,
-                }));
-              }}
+            <select
+              name="digestCampaign"
+              className="border-1 px-[10px] pt-[10px] pb-[10px] w-full"
+              value={editCampaign.digestCampaign}
+              onChange={handleChange}
             >
-              {editCampaign.digestCampaign ? "Yes" : "No"}
-            </button>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
           </div>
         </div>
 
         <div className="text-start pt-4">
           <div className="w-[100%]">
-            <p> Kindly select the time you want tio receive daily digest</p>
+            <p>Select the time to receive daily digest</p>
             <select
-              name="digestFrequency"
+              name="dailyDigest"
               className="border-1 px-[10px] pt-[10px] pb-[10px] w-full"
+              value={editCampaign.dailyDigest}
+              onChange={handleChange}
             >
-              <option value="Yes">Hourly</option>
+              <option value="Hourly">Hourly</option>
               <option value="Daily">Daily</option>
               <option value="Monthly">Monthly</option>
               <option value="Weekly">Weekly</option>
@@ -171,7 +203,7 @@ const EditCampaign = () => {
         <div className="flex gap-[30px] my-[50px]">
           <button
             type="submit"
-            className="border-2 text-black border-black py-[12px] px-[36px]  rounded-[5px] text-[14px]"
+            className="border-2 text-black border-black py-[12px] px-[36px] rounded-[5px] text-[14px]"
           >
             Save Campaign
           </button>

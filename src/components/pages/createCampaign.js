@@ -9,7 +9,7 @@ const CampaignInfo = () => {
   const [campaignDescription, setCampaignDescription] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-  const [digestCampaign, setDigestCampaign] = useState("");
+  const [digestCampaign, setDigestCampaign] = useState(false);
   const [linkedKeywords, setLinkedKeywords] = useState([]);
   const [dailyDigest, setDailyDigest] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
@@ -55,6 +55,14 @@ const CampaignInfo = () => {
     }
   };
 
+  const handleToggle = () => {
+    setDailyDigest(!dailyDigest);
+  };
+
+  const handleCancel = () => {
+    navigate("/");
+  };
+
   const isFormValid =
     campaignName &&
     campaignDescription &&
@@ -88,38 +96,50 @@ const CampaignInfo = () => {
             className="p-[10px] border-1 text-[#999999] rounded-[4px] w-full"
           />
         </div>
-        <div className="text-start">
-          <p>Start Date</p>
-          <input
-            type="date"
-            value={startDate}
-            onChange={(event) => setStartDate(event.target.value)}
-            className="p-[10px] border-1 text-[#999999] rounded-[4px] w-full"
-          />
+        <div className="flex justify-between py-[10px] gap-[26px]">
+          <div className="text-start w-[100%]">
+            <p>Start Date</p>
+            <input
+              type="date"
+              value={startDate}
+              onChange={(event) => setStartDate(event.target.value)}
+              className="p-[10px] border-1 text-[#999999] rounded-[4px] w-full"
+            />
+          </div>
+          <div className="text-start w-[100%]">
+            <p>End Date</p>
+            <input
+              type="date"
+              value={endDate}
+              onChange={(event) => setEndDate(event.target.value)}
+              className="p-[10px] border-1 text-[#999999] rounded-[4px] w-full"
+            />
+          </div>
         </div>
-        <div className="text-start">
-          <p>End Date</p>
-          <input
-            type="date"
-            value={endDate}
-            onChange={(event) => setEndDate(event.target.value)}
-            className="p-[10px] border-1 text-[#999999] rounded-[4px] w-full"
-          />
+
+        <div className="text-start flex justify-between">
+          <p>Want to receive daily digest about the campaign?</p>
+          <div className="w-16 relative">
+            <label
+              htmlFor="daily-digest-toggle"
+              className="bg-[#6E0080] rounded-full flex items-center cursor-pointer"
+            >
+              <span
+                className={`${
+                  dailyDigest ? "bg-white translate-x-full" : ""
+                } bg-white w-[2rem] h-[2rem] inline-block flex items-center justify-center rounded-full transition-transform duration-300`}
+              ></span>
+            </label>
+            <input
+              id="daily-digest-toggle"
+              type="checkbox"
+              checked={dailyDigest}
+              onChange={handleToggle}
+              className="absolute opacity-0"
+            />
+          </div>
         </div>
-        <div className="text-start">
-          <p>Digest Campaign</p>
-          <select
-            value={digestCampaign}
-            onChange={(event) => setDigestCampaign(event.target.value)}
-            className="p-[10px] border-1 text-[#999999] rounded-[4px] w-full"
-          >
-            <option value="" disabled>
-              Select an option...
-            </option>
-            <option value="Yes">Yes</option>
-            <option value="No">No</option>
-          </select>
-        </div>
+
         <div className="text-start">
           <p>Linked Keywords</p>
           <input
@@ -136,11 +156,9 @@ const CampaignInfo = () => {
           <select
             value={dailyDigest}
             onChange={(event) => setDailyDigest(event.target.value)}
-            className="p-[10px] border-1 text-[#999999] rounded-[4px] w-full"
+            className="p-[10px] border-1 text-[#999999] rounded-[4px] w-[155px] h-[40px]"
           >
-            <option value="" disabled>
-              Select an option...
-            </option>
+            <option value="">Select</option>
 
             <option value="Hourly">Hourly</option>
             <option value="Daily">Daily</option>
@@ -148,14 +166,36 @@ const CampaignInfo = () => {
             <option value="Monthly">Monthly</option>
           </select>
         </div>
+        {/* <div className="text-start flex justify-between">
+          <p>Daily Digest</p>
+          <div className="w-16 relative">
+            <label
+              htmlFor="daily-digest-toggle"
+              className="bg-[#6E0080] rounded-full flex items-center cursor-pointer"
+            >
+              <span
+                className={`${
+                  dailyDigest ? "bg-white translate-x-full" : ""
+                } bg-white w-[2rem] h-[2rem] inline-block flex items-center justify-center rounded-full transition-transform duration-300`}
+              ></span>
+            </label>
+            <input
+              id="daily-digest-toggle"
+              type="checkbox"
+              checked={dailyDigest}
+              onChange={handleToggle}
+              className="absolute opacity-0"
+            />
+          </div>
+        </div> */}
+
         <div className="flex gap-[20px]">
           <button
             type="submit"
-            className="border-[#247B7B] border-1 w-[156px] p-[10px] px-[22px] flex justify-center rounded-[4px] my-[20px]"
+            onClick={handleCancel}
+            className="border-[#247B7B] border-1 w-[156px] p-[10px] px-[22px] flex justify-center rounded-[4px] my-[20px] text-[#247B7B] text-[14px] font-semibold"
           >
-            <span className="text-[#247B7B] text-[14px] font-semibold">
-              Cancel
-            </span>
+            Cancel
           </button>
           <button
             type="submit"

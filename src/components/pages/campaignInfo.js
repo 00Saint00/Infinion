@@ -17,6 +17,10 @@ const CampaignInfo = () => {
     navigate("/campaign");
   };
 
+  const handleEdit = () => {
+    navigate(`/edit-campaigns/${id}`);
+  };
+
   return (
     <div className="pt-[30px] px-[85px]">
       <>
@@ -48,7 +52,7 @@ const CampaignInfo = () => {
           <p>Campaign Name</p>
           <input
             className="p-[10px] border-1 text-[#999999] rounded-[4px] w-full"
-            value={campaign.campaignName}
+            value={campaign.campaignName || ""}
             disabled
           />
         </div>
@@ -59,7 +63,9 @@ const CampaignInfo = () => {
             <input
               type="date"
               className="p-[10px] border-1 text-[#999999] rounded-[4px] w-full"
-              value={new Date(campaign.startDate).toLocaleDateString("en-CA")}
+              value={
+                new Date(campaign.startDate).toLocaleDateString("en-CA") || ""
+              }
               disabled
             />
           </div>
@@ -68,7 +74,9 @@ const CampaignInfo = () => {
             <input
               type="date"
               className="p-[10px] border-1 text-[#999999] rounded-[4px] w-full"
-              value={new Date(campaign.endDate).toLocaleDateString("en-CA")}
+              value={
+                new Date(campaign.endDate).toLocaleDateString("en-CA") || ""
+              }
               disabled
             />
           </div>
@@ -93,7 +101,7 @@ const CampaignInfo = () => {
           <div className="w-[100%]">
             <p> Want to receive daily digest about the campaign?</p>
             <select
-              className="border-1 px-[10px] pt-[10px]               pb-[10px] w-full"
+              className="border-1 px-[10px] pt-[10px] pb-[10px] w-full"
               value={campaign.digestCampaign}
               disabled
             >
@@ -119,7 +127,10 @@ const CampaignInfo = () => {
         </div>
 
         <div className="flex gap-[30px] my-[50px]">
-          <button className="border-2 text-black border-black py-[12px] px-[36px]  rounded-[5px] text-[14px]">
+          <button
+            className="border-2 text-black border-black py-[12px] px-[36px] rounded-[5px] text-[14px]"
+            onClick={handleEdit}
+          >
             Edit Campaign
           </button>
 

@@ -154,13 +154,13 @@ const Campaign = () => {
       <div className="py-[10px] flex justify-between">
         <div className="flex gap-[16px]">
           <button className="border-2 border-[#247B7B] p-[10px] text-[14px] text-[#247B7B]">
-            All ({data.nodes.length})
+            All (90)
           </button>
           <button className="border-2 border-[#247B7B] p-[10px] text-[14px] text-[#247B7B]">
-            All ({data.nodes.length})
+            All (90)
           </button>
           <button className="border-2 border-[#247B7B] p-[10px] text-[14px] text-[#247B7B]">
-            All ({data.nodes.length})
+            All (90)
           </button>
         </div>
         <div className="flex gap-[28px]">
