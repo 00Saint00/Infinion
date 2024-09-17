@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
+import { FaCheck } from "react-icons/fa";
+import { BiSolidErrorAlt } from "react-icons/bi";
 
 const CampaignInfo = () => {
   const { id } = useParams();
   const [campaign, setCampaign] = useState({});
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -19,6 +23,35 @@ const CampaignInfo = () => {
 
   const handleEdit = () => {
     navigate(`/edit-campaigns/${id}`);
+  };
+
+  const handleDelete = () => {
+    setShowConfirm(true);
+  };
+
+  const confirmDelete = () => {
+    fetch(
+      `https://infinion-test-int-test.azurewebsites.net/api/campaign/${id}`,
+      {
+        method: "DELETE",
+      }
+    )
+      .then((response) => {
+        if (response.ok) {
+          setShowConfirm(false);
+          setShowSuccess(true);
+          setTimeout(() => {
+            navigate("/campaign");
+          }, 2000);
+        } else {
+          console.error("Error deleting campaign:", response.statusText);
+        }
+      })
+      .catch((error) => console.error("Error deleting campaign:", error));
+  };
+
+  const cancelDelete = () => {
+    setShowConfirm(false);
   };
 
   return (
@@ -134,10 +167,69 @@ const CampaignInfo = () => {
             Edit Campaign
           </button>
 
-          <button className="bg-[#990000] text-white py-[12px] px-[36px] rounded-[5px] text-[14px]">
+          <button
+            className="bg-[#990000] text-white py-[12px] px-[36px] rounded-[5px] text-[14px]"
+            onClick={handleDelete}
+          >
             Stop Campaign
           </button>
         </div>
+        {showConfirm && (
+          <div className="fixed top-0 left-0 w-full h-full bg-gray-500 bg-opacity-50 flex justify-center items-center">
+            <div className="bg-white rounded-lg p-[50px] w-[572px] h-[341px]">
+              <div className="border-b-2 mb-4 pb-4 w-full">
+                <div className="flex justify-center mb-[10px]">
+                  <div className="bg-red-600 rounded-full p-[20px]">
+                    <BiSolidErrorAlt className="text-white h-[50px] w-[50px]" />
+                  </div>
+                </div>
+                <h2 className="text-[16px] font-semibold">Stop Campaign</h2>
+              </div>
+
+              <p className="test-[14px]">
+                Are you sure you want to stop this campaign?
+              </p>
+              <div className="flex justify-center mt-4 gap-[20px]">
+                <button
+                  className="bg-red-500 text-white py-2 px-4 rounded-md"
+                  onClick={confirmDelete}
+                >
+                  Yes
+                </button>
+                <button
+                  className="bg-gray-500 text-white py-2 px-4 rounded-md"
+                  onClick={cancelDelete}
+                >
+                  No
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+        {showSuccess && (
+          <div className="fixed top-0 left-0 w-full h-full bg-gray-500 bg-opacity-50 flex justify-center items-center">
+            <div className="bg-white rounded-lg p-[50px] w-[572px] h-[341px]">
+              <div className="border-b-2 mb-4 pb-4 w-full">
+                <div className="flex justify-center mb-[10px]">
+                  <div className="bg-[#247B7B] rounded-full p-[20px]">
+                    <FaCheck className="text-white h-[50px] w-[50px]" />
+                  </div>
+                </div>
+                <h2 className="text-[16px] font-bold">
+                  Campaign Stopped Successfully!
+                </h2>
+              </div>
+
+              <p className="text-[14px]">
+                Campaign has been stopped successfully. Redirecting to campaigns
+                page...
+              </p>
+              <div className="flex justify-end mt-4">
+                <i className="fa-solid fa-spinner fa-spin text-green-500"></i>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -122,22 +122,28 @@ const Campaign = () => {
   const theme = useTheme([
     getTheme(),
     {
-      HeaderRow: `
-          background-color: #F0F4F4;
-          padding: 12px 10px; 
-          font-size: 12px !important;
-          font-weight: 600;
-          line-height: 16px !important;
-          border-radius: 20px !important;
-                ${showDeletePopup ? "z-index: 0" : ""}
+      HeaderRow: ` 
+      background-color: #F0F4F4;
+      border-radius: 10px !important;`,
 
+      HeaderCell: `
+      padding: 12px 10px;
+      font-size: 12px !important;
+      font-weight: 600;
+      line-height: 16px !important;
+      z-index: 0;
         `,
 
       Row: `
-          text-align: left;
-          padding-left: 0;
-          font-size: 14px;
-        `,
+      text-align: left;
+      padding-left: 0;
+      font-size: 14px;
+      padding: 16px !important;
+      `,
+
+      Cell: `
+      padding: 15px 0 12px 0 !important;
+    `,
       ActionCell: `
          border-radius: none !important;
       `,
@@ -151,16 +157,16 @@ const Campaign = () => {
           All Campaigns
         </h2>
       </div>
-      <div className="py-[10px] flex justify-between">
+      <div className="py-[10px] flex justify-between mb-[36px]">
         <div className="flex gap-[16px]">
-          <button className="border-2 border-[#247B7B] p-[10px] text-[14px] text-[#247B7B]">
+          <button className="border-2 border-[#247B7B] p-[10px] text-[14px] text-[#247B7B] rounded-[4px]">
             All (90)
           </button>
-          <button className="border-2 border-[#247B7B] p-[10px] text-[14px] text-[#247B7B]">
-            All (90)
+          <button className="border-2 border-[#247B7B] p-[10px] text-[14px] text-[#247B7B] rounded-[4px]">
+            Inactive (90)
           </button>
-          <button className="border-2 border-[#247B7B] p-[10px] text-[14px] text-[#247B7B]">
-            All (90)
+          <button className="border-2 border-[#247B7B] p-[10px] text-[14px] text-[#247B7B] rounded-[4px]">
+            Active (90)
           </button>
         </div>
         <div className="flex gap-[28px]">
@@ -188,7 +194,7 @@ const Campaign = () => {
           theme={theme}
           selected={false}
           pagination={pagination}
-          className={`${showDeletePopup ? "bg-[#00000070]" : ""}`}
+          className={`${showDeletePopup ? "bg-[#00000070]" : ""} py-[16px]`}
         />
       )}
       {showDeletePopup && (
